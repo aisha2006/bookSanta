@@ -1,29 +1,60 @@
 import React, {Component} from 'react';
-import {StyleSheet,View,Text,TextInput,Touchableopacity, Alert} from 'react-native';
+import {StyleSheet,View,Text,TextInput,TouchableOpacity, Alert, Modal, KeyboardAvoidingView,scrollView} from 'react-native';
 import firebase from 'firebase';
 import db from '../config.js'
+import SantaAnimation from '../components/SantaClaus'
 
 export default class WelcomeScreen extends Component{
     constructor(){
         super();
         this.state={
             emailId:"",
-            password:""
+            password:"",
+            isModalVisible: false,
+            confirmPassword: "",
+            firstName: "",
+            lastName: "",
+            address: "",
+            contact: "",
+            age: null
         }
     }
 
-    userSignUp=(email,password)=>{
-        firebase.auth().createUserWithEmailAndPassword(email,password)
-        .then((response)=>{
-            return Alert.alert("User added successfully!!")
-        })
-        .catch(
-          ()=>{
-              var errorCode=error.code;
-              var errorMessage=error.message;
-              return Alert.alert(errorMessage);            
-          }
-        );
+    userSignUp=(email,password,confirmPassword)=>{
+        if(password!==confirmPassword){
+           return Alert.alert("Passowrds don't match\nCheck your password");
+        }
+        else{
+            firebase.auth().createUserWithEmailAndPassword(email,password)
+            .then(()=>{
+                db.collection("users").add({
+                    "first_name":this.state.firstName,
+                    "last_name":this.state.lastName,
+                   "contact":this.state.contact,
+                   "age":this.state.age,
+                   "emailId":this.state.emailId,
+                   "address":this.state.address,
+                })
+                return Alert.alert("User added successfully!!",
+                '',
+                [
+                  {
+                      text:"ok",
+                      onPress: ()=>this.setState({isModalVisible:false})
+                  }
+                ]);
+            })
+            .catch(
+            ()=>{
+                var errorCode=error.code;
+                var errorMessage=error.message;
+                return Alert.alert(errorMessage);            
+            }
+            );
+        }
+        
+
+       
     }
 
     userLogin=(email,password)=>{
@@ -39,11 +70,107 @@ export default class WelcomeScreen extends Component{
           }
         );
     }
+
+    showModal=()=>{
+        return(
+            <Modal
+             animationType="fade"
+             transparent={true}
+             visible={this.state.isModalVisible}
+            >
+
+                <View>
+                    <ScrollView>
+                        <KeyboardAvoidingView>
+                            <Text>Registration form</Text>
+                            <TextInput
+                            style={style.formTextInput}
+                            placeholder={"first name"}
+                            maxLength={10}
+                            onChangeText={(text)=>{this.setState({firstName:text})}}
+                            />
+
+                            <TextInput
+                            style={style.formTextInput}
+                            placeholder={"last name"}
+                            maxLength={10}
+                            onChangeText={(text)=>{this.setState({lastName:text})}}
+                            />
+
+                            <TextInput
+                            style={style.formTextInput}
+                            placeholder={"Contact"}
+                            maxLength={10}
+                            keyboardType={"numeric"}
+                            onChangeText={(text)=>{this.setState({contact:text})}}
+                            />
+
+                            <TextInput
+                            style={style.formTextInput}
+                            placeholder={"Age"}
+                            maxLength={2}
+                            keyboardType={"numeric"}
+                            onChangeText={(text)=>{this.setState({age:text})}}
+                            />
+
+                            <TextInput
+                            style={style.formTextInput}
+                            placeholder={"Address"}
+                            multiline={true}
+                            onChangeText={(text)=>{this.setState({address:text})}}
+                            />
+
+                            <TextInput
+                            style={style.formTextInput}
+                            placeholder={"E-mail ID"}
+                            keyboardType={"email-address"}
+                            onChangeText={(text)=>{this.setState({emailId:text})}}
+                            />
+
+                            <TextInput
+                            style={style.formTextInput}
+                            placeholder={"Password"}
+                            secureTextEntry={true}
+                            onChangeText={(text)=>{this.setState({password:text})}}
+                            />
+
+                            <TextInput
+                            style={style.formTextInput}
+                            placeholder={"Confirm Password"}
+                            secureTextEntry={true}
+                            onChangeText={(text)=>{this.setState({confirmPassword:text})}}
+                            />
+                            
+                            <View>
+                                <TouchableOpacity 
+                                style={styles.registerButton}
+                                onPress={this.userSignUp(this.state.emailId,this.state.password,this.state.confirmPassword)}>
+                                    <Text style = {styles.registerButtonText}>
+                                        Register
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View>
+                                <TouchableOpacity
+                                style={style.registerButton}
+                                onPress={()=>{this.setState({isModalVisible:false})}}>
+                                    <Text style={styles.registerButton}>cancel</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </KeyboardAvoidingView>
+                    </ScrollView>
+                </View>
+            </Modal>
+        );
+    }
     
     render(){
         return(
             <View style={styles.container}>
-                <View>
+             {this.showModal()}
+                <View style={{justifyContent:"center",alignItems:"center"}}>
+                    <SantaAnimation/>
                     <Text style={styles.text}>Book Santa</Text>
                 </View>
                 <View>
@@ -116,7 +243,31 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.30,
         shadowRadius: 10.32,
         elevation: 16,
-    }
+    },
+    formTextInput: {
+        width:"75%",
+        height:35,
+        alignSelf:'center',
+        borderColor:'#ffab91',
+        borderRadius:10,
+        borderWidth:1,
+        marginTop:20,
+        padding:10
+    },
+    registerButton:{
+        width:200,
+        height:40,
+        alignItems:'center',
+        justifyContent:'center',
+        borderWidth:1,
+        borderRadius:10,
+        marginTop:30
+      },
+      registerButtonText:{
+        color:'#ff5722',
+        fontSize:15,
+        fontWeight:'bold'
+      },
 });
 
 /*
