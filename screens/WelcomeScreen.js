@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet,View,Text,TextInput,TouchableOpacity, Alert, Modal, KeyboardAvoidingView,scrollView} from 'react-native';
+import {StyleSheet,View,Text,TextInput,TouchableOpacity, Alert, Modal, KeyboardAvoidingView,ScrollView} from 'react-native';
 import firebase from 'firebase';
 import db from '../config.js'
 import SantaAnimation from '../components/SantaClaus'
@@ -45,7 +45,7 @@ export default class WelcomeScreen extends Component{
                 ]);
             })
             .catch(
-            ()=>{
+            (error)=>{
                 var errorCode=error.code;
                 var errorMessage=error.message;
                 return Alert.alert(errorMessage);            
@@ -60,10 +60,10 @@ export default class WelcomeScreen extends Component{
     userLogin=(email,password)=>{
         firebase.auth().signInWithEmailAndPassword(email,password)
         .then(()=>{
-            return Alert.alert("Logged in successfully!!")
+            this.props.navigation.navigate("BookDonate");
         })
         .catch(
-          ()=>{
+          (error)=>{
               var errorCode=error.code;
               var errorMessage=error.message;
               return Alert.alert(errorMessage);            
@@ -84,21 +84,21 @@ export default class WelcomeScreen extends Component{
                         <KeyboardAvoidingView>
                             <Text>Registration form</Text>
                             <TextInput
-                            style={style.formTextInput}
+                            style={styles.formTextInput}
                             placeholder={"first name"}
                             maxLength={10}
                             onChangeText={(text)=>{this.setState({firstName:text})}}
                             />
 
                             <TextInput
-                            style={style.formTextInput}
+                            style={styles.formTextInput}
                             placeholder={"last name"}
                             maxLength={10}
                             onChangeText={(text)=>{this.setState({lastName:text})}}
                             />
 
                             <TextInput
-                            style={style.formTextInput}
+                            style={styles.formTextInput}
                             placeholder={"Contact"}
                             maxLength={10}
                             keyboardType={"numeric"}
@@ -106,7 +106,7 @@ export default class WelcomeScreen extends Component{
                             />
 
                             <TextInput
-                            style={style.formTextInput}
+                            style={styles.formTextInput}
                             placeholder={"Age"}
                             maxLength={2}
                             keyboardType={"numeric"}
@@ -114,28 +114,28 @@ export default class WelcomeScreen extends Component{
                             />
 
                             <TextInput
-                            style={style.formTextInput}
+                            style={styles.formTextInput}
                             placeholder={"Address"}
                             multiline={true}
                             onChangeText={(text)=>{this.setState({address:text})}}
                             />
 
                             <TextInput
-                            style={style.formTextInput}
+                            style={styles.formTextInput}
                             placeholder={"E-mail ID"}
                             keyboardType={"email-address"}
                             onChangeText={(text)=>{this.setState({emailId:text})}}
                             />
 
                             <TextInput
-                            style={style.formTextInput}
+                            style={styles.formTextInput}
                             placeholder={"Password"}
                             secureTextEntry={true}
                             onChangeText={(text)=>{this.setState({password:text})}}
                             />
 
                             <TextInput
-                            style={style.formTextInput}
+                            style={styles.formTextInput}
                             placeholder={"Confirm Password"}
                             secureTextEntry={true}
                             onChangeText={(text)=>{this.setState({confirmPassword:text})}}
@@ -144,7 +144,7 @@ export default class WelcomeScreen extends Component{
                             <View>
                                 <TouchableOpacity 
                                 style={styles.registerButton}
-                                onPress={this.userSignUp(this.state.emailId,this.state.password,this.state.confirmPassword)}>
+                                onPress={()=>this.userSignUp(this.state.emailId,this.state.password,this.state.confirmPassword)}>
                                     <Text style = {styles.registerButtonText}>
                                         Register
                                     </Text>
@@ -153,7 +153,7 @@ export default class WelcomeScreen extends Component{
 
                             <View>
                                 <TouchableOpacity
-                                style={style.registerButton}
+                                style={styles.registerButton}
                                 onPress={()=>{this.setState({isModalVisible:false})}}>
                                     <Text style={styles.registerButton}>cancel</Text>
                                 </TouchableOpacity>
@@ -171,7 +171,7 @@ export default class WelcomeScreen extends Component{
              {this.showModal()}
                 <View style={{justifyContent:"center",alignItems:"center"}}>
                     <SantaAnimation/>
-                    <Text style={styles.text}>Book Santa</Text>
+                    <Text style={styles.title}>Book Santa</Text>
                 </View>
                 <View>
                   <TextInput
@@ -200,7 +200,7 @@ export default class WelcomeScreen extends Component{
 
                   <TouchableOpacity
                    style={styles.button}
-                   onPress={()=>{this.userSignUp(this.state.emailId,this.state.password)}}>
+                   onPress={()=>{this.setState({isModalVisible:true})}}>
                       <Text style = {styles.buttonText}>SignUp</Text>
                   </TouchableOpacity>
                 </View>
@@ -269,19 +269,3 @@ const styles = StyleSheet.create({
         fontWeight:'bold'
       },
 });
-
-/*
-this.title
-this.input - name
-this.button - play state
-
-//form - this
-this.button.mousePressed(
-    function(){
-        statement1;
-        statement2;
-        this.x;
-    }
-);
-Binds the "this" to the root/original object that calls the function
-*/
