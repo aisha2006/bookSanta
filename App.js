@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet,View,Text} from 'react-native';
 import {createSwitchNavigator,createAppContainer} from 'react-navigation';
 import WelcomeScreen from './screens/WelcomeScreen';
-import AppDrawerNavigator from "./components/AppDrAppDrawerNavigator";
+import AppDrawerNavigator from "./components/AppDrawerNavigator";
 
 export default function App() {
   return (
