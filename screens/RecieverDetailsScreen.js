@@ -9,6 +9,7 @@ export default class RecieverDetailsScreen extends Component{
         super(props);
         this.state={
             userId:firebase.auth().currentUser.email,
+            userName:"",
             receiverId:this.props.navigation.getParam("details")["user_id"],
             requestId:this.props.navigation.getParam("details")["request_id"],
             bookName:this.props.navigation.getParam("details")["book_name"],
@@ -16,7 +17,7 @@ export default class RecieverDetailsScreen extends Component{
             receiverName:"",
             receiverContact:"",
             receiverAddress:"",
-            recieverRequestDocId:""
+            recieverRequestDocId:"",
         }
     }
 
@@ -50,6 +51,20 @@ export default class RecieverDetailsScreen extends Component{
     componentDidMount(){
         this.getRecieverDetails();
     }
+
+    addNotifications=()=>{
+        var message = this.state.userName+" has shown interest in donating the book";
+        db.collection("notifications").add({
+         book_name: this.state.bookName,
+         target_user_id: this.state.recieverId,
+         donor_id:this.state.userId,
+         request_id:this.state.requestId,
+         data:firebase.firestore.FieldValue.serverTimestamp(),
+         status:"unread",
+         notification_message:message
+        })
+    }
+
     render(){
         return(
             <View style={styles.container}>
@@ -107,8 +122,9 @@ export default class RecieverDetailsScreen extends Component{
                         <TouchableOpacity
                         style={styles.button}
                         onPress={()=>{
-                            this.updateBookStatus()
-                            this.props.navigation.navigate("MyDonations")
+                            this.updateBookStatus();
+                            this.addNotifications();
+                            this.props.navigation.navigate("MyDonations");
                             }}
                         >
                             <Text>I want to donate</Text>
