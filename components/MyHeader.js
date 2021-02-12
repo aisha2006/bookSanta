@@ -7,7 +7,7 @@ export default class MyHeader extends Component{
     constructor(props){
         super(props);
         this.state={
-            value=""
+            value:""
         }
     }
     getNumberofUnreadNotifications=()=>{
@@ -72,9 +72,4 @@ export default class MyHeader extends Component{
             />
         )
     }
-}
-
-
-
-
-export default MyHeader;
+};

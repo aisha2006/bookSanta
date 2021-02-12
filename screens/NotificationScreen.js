@@ -4,13 +4,14 @@ import {ListItem} from "react-native-elements"
 import MyHeader from '../components/MyHeader'
 import db from "../config";
 import firebase from "firebase";
+import SwipeableFlatlist from '../components/SwipeableFlatlist';
 
 
 export default class NotificationScreen extends Component{
     constructor(props){
        super(props);
        this.state={
-           user_id=firebase.auth().currentUser.email,
+           user_id:firebase.auth().currentUser.email,
            allNotifications: []
        }
        this.notificationRef=null;
@@ -70,10 +71,8 @@ export default class NotificationScreen extends Component{
                                You have no notification 
                             </Text>
                          </View>)
-                         :(<FlatList
-                         keyExtractor={this.keyExtractor}
-                         data={this.state.all_notifications}
-                         renderItem={this.renderItem}
+                         :(<SwipeableFlatlist
+                            allNotifications = {this.state.allNotifications}
                          />)}
                         
                     </View>
