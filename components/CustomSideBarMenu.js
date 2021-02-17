@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet,View,Text,TextInput,TouchableOpacity, Alert, Modal, KeyboardAvoidingView,ScrollView,FlatList} from "react-native";
 import {DrawerItems} from 'react-navigation-drawer'
-
+import firebase from 'firebase'; 
 export default class CustomSideBarMenu extends Component{
     render(){
         return(
@@ -14,12 +14,12 @@ export default class CustomSideBarMenu extends Component{
 
                 <View style={styles.logOutContainer}>
                     <TouchableOpacity 
-                    style={logOutButton}
+                    style={styles.logOutButton}
                     onPress={()=>{
                         firebase.auth().signOut()
                         this.props.Navigation.navigate("WelcomeScreen");                    
                     }}>
-                        <Text style={styles.logoutText}>log out</Text>
+                        <Text style={styles.logOutText}>log out</Text>
                     </TouchableOpacity>
                 </View>
             </View>

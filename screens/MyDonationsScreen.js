@@ -30,6 +30,11 @@ export default class MyDonationsScreen extends Component{
     componentDidMount(){
         this.getAllDonations()
     }
+
+    componentWillUnmount(){
+        this.requestRef();
+    }
+    
     keyExtractor=(item,index)=> index.toString();
 
     renderItem = (item,i)=>{
@@ -97,7 +102,7 @@ export default class MyDonationsScreen extends Component{
        if(bookDetails_status==="Book Sent"){
            var requestStatus = "Donor Interested";
            db.collection("all_donations").doc(bookDetails.doc_id).update({
-               request_status:request_status
+               request_status:requestStatus
            })
            this.sendNotification(bookDetails,requestStatus);
        }
@@ -105,7 +110,7 @@ export default class MyDonationsScreen extends Component{
        else{
         var requestStatus = "Book Sent";
         db.collection("all_donations").doc(bookDetails.doc_id).update({
-            request_status:request_status
+            request_status:requestStatus
         })
         this.sendNotification(bookDetails,requestStatus);
        }

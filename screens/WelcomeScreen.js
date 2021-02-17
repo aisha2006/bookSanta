@@ -34,6 +34,7 @@ export default class WelcomeScreen extends Component{
                    "age":this.state.age,
                    "emailId":this.state.emailId,
                    "address":this.state.address,
+                   "isBookRequestActive": false
                 })
                 return Alert.alert("User added successfully!!",
                 '',

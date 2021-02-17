@@ -3,7 +3,6 @@ import {View,Text,Animated, StyleSheet,Dimensions} from 'react-native';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {ListItem, Icon} from "react-native-elements";
 import db from "../config";
-import { Dimensions } from 'react-native';
 
 export default class SwipeableFlatlist extends Component{
     constructor(props){
